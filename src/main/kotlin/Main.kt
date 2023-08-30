@@ -6,20 +6,22 @@ fun main(args: Array<String>) {
     val matrix = input.split("\n").map { line -> line.asIterable().map { it.toString().toInt() } }
     val matrixSize = matrix.size
 
-    var totalVisible = 4 * (matrixSize - 1)
+    // all trees on the edges are visible
+    val visibleOnEdges = 4 * (matrixSize - 1)
 
-    (1..<matrixSize - 1).map { rowNumber ->
+    val visibleInside = (1..<matrixSize - 1).flatMap { rowNumber ->
         (1..<matrixSize - 1).map { columnNumber ->
             val tree = matrix[rowNumber][columnNumber]
             val row = matrix[rowNumber]
             val column = matrix.map { it[columnNumber] }
-            val visible = row.take(columnNumber).all { it < tree } ||
+
+            // Map the tree to its visibility from all 4 directions (left, right, top, bottom)
+            row.take(columnNumber).all { it < tree } ||
                     row.takeLast(matrixSize - 1 - columnNumber).all { it < tree } ||
                     column.take(rowNumber).all { it < tree } ||
                     column.takeLast(matrixSize - 1 - rowNumber).all { it < tree }
-            if (visible) ++totalVisible
         }
-    }
+    }.count { it }
 
-    println(totalVisible)
+    println(visibleOnEdges + visibleInside)
 }
