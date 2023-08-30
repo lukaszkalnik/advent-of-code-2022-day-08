@@ -20,14 +20,17 @@ fun main(args: Array<String>) {
                     false
                 } else {
                     val row = matrix[rowNumber]
-                    val column = matrix.map { it[columnNumber] }
 
                     // A tree is visible if it is visible at least from 1 direction (left, right, top, bottom). For a tree
                     // to be visible from a direction, all trees between it and the edge must be lower than this tree.
-                    row.asSequence().take(columnNumber).all { it < tree } ||
-                            row.takeLast(matrixSize - 1 - columnNumber).all { it < tree } ||
-                            column.asSequence().take(rowNumber).all { it < tree } ||
-                            column.takeLast(matrixSize - 1 - rowNumber).all { it < tree }
+                    if (row.asSequence().take(columnNumber).all { it < tree } ||
+                        row.takeLast(matrixSize - 1 - columnNumber).all { it < tree }) {
+                        true
+                    } else {
+                        val column = matrix.map { it[columnNumber] }
+                        column.asSequence().take(rowNumber).all { it < tree } ||
+                                column.takeLast(matrixSize - 1 - rowNumber).all { it < tree }
+                    }
                 }
             }
         }.count { it }
