@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.21"
+    kotlin("jvm") version "1.9.10"
     application
 }
 
@@ -11,6 +11,8 @@ repositories {
 }
 
 dependencies {
+    implementation("com.squareup.okio:okio:3.5.0")
+
     testImplementation(kotlin("test"))
 }
 
