@@ -12,19 +12,23 @@ fun main(args: Array<String>) {
 
     val time = measureTimeMillis {
         val visibleInside = (1..<matrixSize - 1).flatMap { rowNumber ->
-            val row = matrix[rowNumber]
-
             (1..<matrixSize - 1).map { columnNumber ->
                 val tree = matrix[rowNumber][columnNumber]
-                val column = matrix.map { it[columnNumber] }
 
-                // Map the tree to its visibility. A tree is visible if it is visible at least from 1 direction (left,
-                // right, top, bottom). For a tree to be visible from a direction, all trees between it and the edge must be
-                // lower than this tree.
-                row.asSequence().take(columnNumber).all { it < tree } ||
-                        row.takeLast(matrixSize - 1 - columnNumber).all { it < tree } ||
-                        column.asSequence().take(rowNumber).all { it < tree } ||
-                        column.takeLast(matrixSize - 1 - rowNumber).all { it < tree }
+                // Map the tree to its visibility. A tree with height 0 (not on the edge) is never visible.
+                if (tree == 0) {
+                    false
+                } else {
+                    val row = matrix[rowNumber]
+                    val column = matrix.map { it[columnNumber] }
+
+                    // A tree is visible if it is visible at least from 1 direction (left, right, top, bottom). For a tree
+                    // to be visible from a direction, all trees between it and the edge must be lower than this tree.
+                    row.asSequence().take(columnNumber).all { it < tree } ||
+                            row.takeLast(matrixSize - 1 - columnNumber).all { it < tree } ||
+                            column.asSequence().take(rowNumber).all { it < tree } ||
+                            column.takeLast(matrixSize - 1 - rowNumber).all { it < tree }
+                }
             }
         }.count { it }
 
