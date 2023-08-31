@@ -13,6 +13,9 @@ repositories {
 dependencies {
     implementation("com.squareup.okio:okio:3.5.0")
 
+    implementation("org.jetbrains.kotlinx:multik-core:0.2.2")
+    implementation("org.jetbrains.kotlinx:multik-default:0.2.2")
+
     testImplementation(kotlin("test"))
 }
 

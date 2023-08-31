@@ -1,10 +1,16 @@
 import okio.FileSystem
 import okio.Path.Companion.toPath
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>) {
     val input = FileSystem.SYSTEM.read("input.txt".toPath()) { readUtf8() }.dropLast(1)
     val matrix = input.split("\n").map { line -> line.asIterable().map { it.toString().toInt() } }
+    val matrix2d = mk.ndarray(matrix)
+
     val matrixSize = matrix.size
 
     val time = measureTimeMillis {
@@ -15,19 +21,16 @@ fun main(args: Array<String>) {
                 if (tree == 0) {
                     1
                 } else {
-                    val row = matrix[rowNumber]
-
-                    val leftRow = row.take(columnNumber)
+                    val leftRow = matrix2d[rowNumber, 0..<columnNumber].toList()
                     val leftDistance = leftRow.takeLastWhileIncluding { it < tree }.size
 
-                    val rightRow = row.takeLast(matrixSize - 1 - columnNumber)
+                    val rightRow = matrix2d[rowNumber, columnNumber + 1..<matrixSize].toList()
                     val rightDistance = rightRow.takeWhileIncluding { it < tree }.size
 
-                    val column = matrix.map { it[columnNumber] }
-                    val topColumn = column.take(rowNumber)
+                    val topColumn = matrix2d[0..<rowNumber, columnNumber].toList()
                     val topDistance = topColumn.takeLastWhileIncluding { it < tree }.size
 
-                    val bottomColumn = column.takeLast(matrixSize - 1 - rowNumber)
+                    val bottomColumn = matrix2d[rowNumber + 1..<matrixSize, columnNumber].toList()
                     val bottomDistance = bottomColumn.takeWhileIncluding { it < tree }.size
 
                     leftDistance * rightDistance * topDistance * bottomDistance
