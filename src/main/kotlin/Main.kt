@@ -3,12 +3,12 @@ import okio.Path.Companion.toPath
 import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>) {
-    val input = FileSystem.SYSTEM.read("test_input.txt".toPath()) { readUtf8() }.dropLast(1)
+    val input = FileSystem.SYSTEM.read("input.txt".toPath()) { readUtf8() }.dropLast(1)
     val matrix = input.split("\n").map { line -> line.asIterable().map { it.toString().toInt() } }
     val matrixSize = matrix.size
 
     val time = measureTimeMillis {
-        val scenicScore = (1..<matrixSize - 1).map { rowNumber ->
+        val maxScenicScore = (1..<matrixSize - 1).flatMap { rowNumber ->
             (1..<matrixSize - 1).map { columnNumber ->
                 val tree = matrix[rowNumber][columnNumber]
 
@@ -33,11 +33,9 @@ fun main(args: Array<String>) {
                     leftDistance * rightDistance * topDistance * bottomDistance
                 }
             }
-        }
+        }.max()
 
-        scenicScore.forEach {
-            println(it)
-        }
+        println(maxScenicScore)
     }
     println("Time: $time ms")
 }
